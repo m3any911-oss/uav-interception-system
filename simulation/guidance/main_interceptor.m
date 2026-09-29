@@ -41,10 +41,10 @@ def run_interception_loop():
         # 4. حساب المسافة المباشرة للهدف
         dist_to_target = math.sqrt(pos[0]**2 + pos[1]**2 + pos[2]**2)
         
-        # 5. شرط الاصطدام/الإصابة المباشرة (توسيع المدى إلى 30 متر)
+        # 5. شرط الوصول لأقرب مسافة CPA / الاصطدام
         if dist_to_target < 30.0:
             print("-" * 90)
-            print(f"🎯 [HIT DETECTED] تم تحييد الهدف بنجاح! (المسافة الأدنى: {dist_to_target:.2f}m)")
+            print(f"🎯 [CPA REACHED] تم تحييد الهدف بنجاح! (المسافة الأدنى: {dist_to_target:.2f}m)")
             
             # إرسال أمر العودة للقاعدة RTL تلقائياً عبر MAVLink
             if bridge.master is not None:
@@ -65,9 +65,9 @@ def run_interception_loop():
         target_roll_deg = max(-30.0, min(30.0, target_roll_deg))
         target_pitch_deg = max(-15.0, min(15.0, target_pitch_deg))
         
-        # إرسال أوامر التوجيه
+        # إرسال أوامر التوجيه بالأسماء الصحيحة المتوافقة مع mavlink_bridge.py
         if bridge.master is not None:
-            bridge.send_attitude_target(roll_deg=target_roll_deg, pitch_deg=target_pitch_deg, thrust=0.80)
+            bridge.send_attitude_target(roll=target_roll_deg, pitch=target_pitch_deg, thrust=0.80)
         
         if step % 10 == 0 or step == 1:
             print(f" #{step:03d}   | X:{pos[0]:.1f}, Y:{pos[1]:.1f} | R:{dist_to_target:.1f}m   | Roll:{target_roll_deg:.1f}°, Pitch:{target_pitch_deg:.1f}° | SENT")
